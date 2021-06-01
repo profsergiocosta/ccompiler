@@ -8,12 +8,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/profsergiocosta/jackcompiler-go/symboltable"
-	"github.com/profsergiocosta/jackcompiler-go/vmwriter"
-	"github.com/profsergiocosta/jackcompiler-go/xmlwriter"
+	"github.com/profsergiocosta/ccompiler/symboltable"
+	"github.com/profsergiocosta/ccompiler/vmwriter"
+	"github.com/profsergiocosta/ccompiler/xmlwriter"
 
-	"github.com/profsergiocosta/jackcompiler-go/lexer"
-	"github.com/profsergiocosta/jackcompiler-go/token"
+	"github.com/profsergiocosta/ccompiler/lexer"
+	"github.com/profsergiocosta/ccompiler/token"
+	"github.com/profsergiocosta/ccompiler/ast"
 )
 
 const (
@@ -52,7 +53,7 @@ func New(pathName string) *Parser {
 
 	p.output = VM
 	p.st = symboltable.NewSymbolTable()
-	p.vm = vmwriter.New(FilenameWithoutExtension(pathName) + ".vm")
+	p.vm = vmwriter.New(FilenameWithoutExtension(pathName) + ".asm")
 	p.nextToken()
 	p.whileLabelNum = 0
 	p.ifLabelNum = 0
@@ -64,8 +65,80 @@ func (p *Parser) nextToken() {
 }
 
 func (p *Parser) Compile() {
-	p.CompileClass()
+	//p.CompileProgram()
+
 }
+
+
+
+func (p *Parser) ParseProgram() *ast.Program {
+
+	
+
+	p.expectPeek(token.INT)
+	p.expectPeek(token.IDENT)
+	
+	fun := &ast.Function{Token: p.curToken}
+
+	// parameters
+	p.expectPeek(token.LPAREN)
+	p.expectPeek(token.RPAREN)
+
+	p.expectPeek(token.LBRACE)
+
+	p.expectPeek(token.RETURN)
+
+	stmt := p.parseReturnStatement()
+
+
+	p.expectPeek(token.RBRACE)
+
+	fun.Statement = stmt
+
+	program := &ast.Program{Function: fun}
+
+	return program
+
+
+
+}
+
+
+
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	stmt := &ast.ReturnStatement{
+		Token: p.curToken,
+	}
+
+	p.nextToken()
+
+	stmt.ReturnValue = p.parseIntegerLiteral()
+
+	for p.peekTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return stmt
+}
+
+
+func (p *Parser) parseIntegerLiteral() *ast.IntegerLiteral {
+	lit := &ast.IntegerLiteral{Token: p.curToken}
+
+	val, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
+	
+
+	if err != nil {
+		msg := fmt.Sprintf("could not parse %q as integer", p.curToken.Literal)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+
+	lit.Value = val
+	return lit
+}
+
+
 
 func (p *Parser) CompileClass() {
 

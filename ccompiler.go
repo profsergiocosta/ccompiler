@@ -49,7 +49,10 @@ func main() {
 			abs, _ := filepath.Abs(path)
 			fmt.Printf("Compiling: %s \n", abs)
 			p := parser.New(path)
-			p.Compile()
+			program := p.ParseProgram()
+			//fmt.Printf(program.Function.TokenLiteral())
+			fmt.Printf(program.Function.Statement.String())
+			//p.Compile()
 			//p.CompileExpression()
 			//p.CompileIf()
 		}

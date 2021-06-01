@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/profsergiocosta/jackcompiler-go/token"
+	"github.com/profsergiocosta/ccompiler/token"
 
-	"github.com/profsergiocosta/jackcompiler-go/lexer"
+	"github.com/profsergiocosta/ccompiler/lexer"
 )
 
 func tagToken(tok token.Token) string {

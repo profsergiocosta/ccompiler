@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/profsergiocosta/jackcompiler-go/parser"
+	"github.com/profsergiocosta/ccompiler/parser"
 )
 
 // https://golang.org/doc/code.html

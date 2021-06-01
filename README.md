@@ -6,5 +6,5 @@ export GOPATH=$HOME/go
 
 ## Run
 
-go run github.com/profsergiocosta/jackcompiler-go/ fileName.jack
+go run github.com/profsergiocosta/ccompiler/ fileName.jack
 

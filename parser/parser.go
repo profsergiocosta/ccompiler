@@ -53,7 +53,9 @@ func New(pathName string) *Parser {
 
 	p.output = VM
 	p.st = symboltable.NewSymbolTable()
-	p.vm = vmwriter.New(FilenameWithoutExtension(pathName) + ".asm")
+	p.vm = vmwriter.New(FilenameWithoutExtension(pathName) + ".vm")
+	
+
 	p.nextToken()
 	p.whileLabelNum = 0
 	p.ifLabelNum = 0

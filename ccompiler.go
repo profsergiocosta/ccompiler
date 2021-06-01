@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/profsergiocosta/ccompiler/parser"
+	"github.com/profsergiocosta/ccompiler/eval"
 )
 
 // https://golang.org/doc/code.html
@@ -47,14 +48,20 @@ func main() {
 
 		} else {
 			abs, _ := filepath.Abs(path)
+
+			f, _ := os.Create(parser.FilenameWithoutExtension(abs) + ".asm")
+
 			fmt.Printf("Compiling: %s \n", abs)
 			p := parser.New(path)
 			program := p.ParseProgram()
 			//fmt.Printf(program.Function.TokenLiteral())
 			fmt.Printf(program.Function.Statement.String())
+			eval.Eval(program, f)
 			//p.Compile()
 			//p.CompileExpression()
 			//p.CompileIf()
+			f.Close()
+
 		}
 
 	}

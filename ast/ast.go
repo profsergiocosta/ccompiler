@@ -33,6 +33,15 @@ type Program struct {
 	Function *Function
 }
 
+// TokenLiteral returns the first token literal of a program.
+func (p *Program) TokenLiteral() string {
+	return ""
+}
+
+func (p *Program) String() string {
+	return ""
+}
+
 
 type Function struct {
 	Token      token.Token
@@ -44,6 +53,11 @@ func (fl *Function) expressionNode() {}
 // TokenLiteral returns a token literal of function.
 func (fl *Function) TokenLiteral() string {
 	return fl.Token.Literal
+}
+
+
+func (fl *Function) String() string {
+	return fl.TokenLiteral()
 }
 
 

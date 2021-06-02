@@ -49,18 +49,16 @@ func main() {
 		} else {
 			abs, _ := filepath.Abs(path)
 
-			f, _ := os.Create(parser.FilenameWithoutExtension(abs) + ".asm")
-
 			fmt.Printf("Compiling: %s \n", abs)
 			p := parser.New(path)
 			program := p.ParseProgram()
 			//fmt.Printf(program.Function.TokenLiteral())
-			fmt.Printf(program.Function.Statement.String())
-			eval.Eval(program, f)
+			//fmt.Printf(program.Function.Statement.String())
+			s := eval.Eval(program)
+			fmt.Printf(s)
 			//p.Compile()
 			//p.CompileExpression()
 			//p.CompileIf()
-			f.Close()
 
 		}
 

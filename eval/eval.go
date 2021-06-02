@@ -3,41 +3,60 @@ package eval
 import (
 
 	"fmt"
-	"os"
 
 	"github.com/profsergiocosta/ccompiler/ast"
 )
 
-func Eval(node ast.Node, asm *os.File) {
+func Eval(node ast.Node) string {
 
 	switch node := node.(type) {
 		// Statements
 	
 		case *ast.Program:
-			evalProgram(node, asm)
+			return evalProgram(node)
 
 		case *ast.Function:
-			evalFunction(node, asm)
+			return evalFunction(node)
+
+		case *ast.ReturnStatement:
+			return evalReturnStatement(node)
+		
+		case *ast.IntegerLiteral:
+			return evalIntegerLiteral(node)
 			
 	}
 
+	return ""
+}
+
+func evalProgram(program *ast.Program) string {
+
+	return Eval(program.Function)
+
+
 
 }
 
-func evalProgram(program *ast.Program, asm *os.File) {
-
-	Eval(program.Function, asm)
-
-}
-
-func evalFunction(function *ast.Function, asm *os.File) {
+func evalFunction(function *ast.Function) string {
 
 	s := fmt.Sprintf(".globl _%s\n",function.Token.Literal)
-	asm.WriteString(s)
 
-	s = fmt.Sprintf("_%s\n",function.Token.Literal)
-	asm.WriteString(s)
+	s = s + fmt.Sprintf("_%s:\n",function.Token.Literal)
 
-	Eval(function.Statement, asm)
+	return s + Eval(function.Statement)
+
+
+}
+
+func evalReturnStatement (ret *ast.ReturnStatement) string {
+	s := Eval(ret.ReturnValue)
+	s = s + fmt.Sprintf("ret\n")
+	return s
+
+}
+
+func evalIntegerLiteral (val *ast.IntegerLiteral) string {
+	s := fmt.Sprintf("movl \t$%v, %%%%eax\n", val.Value )
+	return s
 
 }

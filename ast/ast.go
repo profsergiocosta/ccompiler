@@ -51,8 +51,8 @@ func (p *Program) String() string {
 }
 
 type Function struct {
-	Token     token.Token
-	Statement Statement
+	Token      token.Token
+	Statements []Statement
 }
 
 func (fl *Function) expressionNode() {}
@@ -67,7 +67,9 @@ func (fl *Function) String() string {
 
 	out.WriteString("( " + fl.TokenLiteral() + " ")
 
-	out.WriteString(fl.Statement.String())
+	for _, st := range fl.Statements {
+		out.WriteString(st.String())
+	}
 
 	out.WriteString(" )")
 

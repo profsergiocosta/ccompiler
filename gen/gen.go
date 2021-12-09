@@ -92,15 +92,22 @@ func genFunction(function *ast.Function) string {
 
 	s = s + fmt.Sprintf("%s:\n", function.Token.Literal)
 
-	return s + Generate(function.Statement)
+	for _, st := range function.Statements {
+		s = s + genStatement(&st)
+	}
 
+	return s
+
+}
+
+func genStatement(statement *ast.Statement) string {
+	return ""
 }
 
 func genReturnStatement(ret *ast.ReturnStatement) string {
 	s := Generate(ret.ReturnValue)
 	s = s + "ret\n"
 	return s
-
 }
 
 func genIntegerLiteral(val *ast.IntegerLiteral) string {

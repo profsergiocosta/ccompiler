@@ -65,13 +65,18 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 	p.expectPeek(token.LBRACE)
 
-	p.expectPeek(token.RETURN)
+	fun.Statements = []ast.Statement{}
 
-	stmt := p.parseReturnStatement()
+	for !p.peekTokenIs(token.RBRACE) {
+		stmt := p.parseStatement()
+		if stmt != nil {
+			fun.Statements = append(fun.Statements, stmt)
+		}
+	}
 
 	p.expectPeek(token.RBRACE)
 
-	fun.Statement = stmt
+	//fun.Statement = stmt
 
 	program := &ast.Program{Function: fun}
 
@@ -79,16 +84,32 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 }
 
+func (p *Parser) parseStatement() ast.Statement {
+
+	switch p.peekToken.Type {
+	case token.RETURN:
+		return p.parseReturnStatement()
+	default:
+		return nil
+	}
+}
+
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+
+	fmt.Println("----")
+	p.expectPeek(token.RETURN)
+
 	stmt := &ast.ReturnStatement{
 		Token: p.curToken,
 	}
 
 	stmt.ReturnValue = p.parseExpression()
 
-	for p.peekTokenIs(token.SEMICOLON) {
-		p.nextToken()
-	}
+	fmt.Println(p.curToken.Literal)
+
+	p.expectPeek(token.SEMICOLON)
+
+	fmt.Println(p.curToken.Literal)
 
 	return stmt
 }
@@ -152,6 +173,10 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 
 	lit.Value = val
 	return lit
+}
+
+func (p *Parser) curTokenIs(t token.TokenType) bool {
+	return p.curToken.Type == t
 }
 
 func (p *Parser) peekTokenIs(t token.TokenType) bool {

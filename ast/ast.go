@@ -20,7 +20,7 @@ type Node interface {
 }
 
 type Statement interface {
-	Node 
+	Node
 	statementNode()
 }
 
@@ -39,13 +39,20 @@ func (p *Program) TokenLiteral() string {
 }
 
 func (p *Program) String() string {
-	return ""
+	var out bytes.Buffer
+
+	out.WriteString("(Program ")
+
+	out.WriteString(p.Function.String())
+
+	out.WriteString(" )")
+
+	return out.String()
 }
 
-
 type Function struct {
-	Token      token.Token
-	Statement  Statement
+	Token     token.Token
+	Statement Statement
 }
 
 func (fl *Function) expressionNode() {}
@@ -55,11 +62,17 @@ func (fl *Function) TokenLiteral() string {
 	return fl.Token.Literal
 }
 
-
 func (fl *Function) String() string {
-	return fl.TokenLiteral()
-}
+	var out bytes.Buffer
 
+	out.WriteString("( " + fl.TokenLiteral() + " ")
+
+	out.WriteString(fl.Statement.String())
+
+	out.WriteString(" )")
+
+	return out.String()
+}
 
 // ReturnStatement represents a return statement.
 type ReturnStatement struct {
@@ -88,7 +101,6 @@ func (rs *ReturnStatement) String() string {
 	return out.String()
 }
 
-
 // IntegerLiteral represents an integer literal.
 type IntegerLiteral struct {
 	Token token.Token
@@ -107,23 +119,23 @@ func (il *IntegerLiteral) String() string {
 }
 
 type UnaryExpression struct {
-	Operator token.Token 
+	Operator token.Token
 	Right    Expression
 }
 
-func (exp *UnaryExpression) expressionNode() {}
+func (exp *UnaryExpression) expressionNode()      {}
 func (exp *UnaryExpression) TokenLiteral() string { return exp.Operator.Literal }
 func (exp *UnaryExpression) String() string {
 	return exp.Operator.Literal
 }
 
 type BinaryExpression struct {
-	Operator token.Token 
-	Left    Expression
+	Operator token.Token
+	Left     Expression
 	Right    Expression
 }
 
-func (exp *BinaryExpression) expressionNode() {}
+func (exp *BinaryExpression) expressionNode()      {}
 func (exp *BinaryExpression) TokenLiteral() string { return exp.Operator.Literal }
 
 func (exp *BinaryExpression) String() string {

@@ -53,23 +53,13 @@ func (p *Parser) nextToken() {
 	p.peekToken = p.l.NextToken()
 }
 
-func (p *Parser) Compile() {
-	//p.CompileProgram()
-
-}
-
-
-
 func (p *Parser) ParseProgram() *ast.Program {
-
-	
 
 	p.expectPeek(token.INT)
 	p.expectPeek(token.IDENT)
-	
+
 	fun := &ast.Function{Token: p.curToken}
 
-	// parameters
 	p.expectPeek(token.LPAREN)
 	p.expectPeek(token.RPAREN)
 
@@ -79,7 +69,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 	stmt := p.parseReturnStatement()
 
-
 	p.expectPeek(token.RBRACE)
 
 	fun.Statement = stmt
@@ -88,11 +77,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 	return program
 
-
-
 }
-
-
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	stmt := &ast.ReturnStatement{
@@ -109,27 +94,26 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 }
 
 func (p *Parser) parseExpression() ast.Expression {
-	
+
 	exp := p.parseTerm()
-	
-	for !p.peekTokenIs(token.EOF) &&  (p.peekTokenIs(token.PLUS) || p.peekTokenIs(token.MINUS) )   {
+
+	for !p.peekTokenIs(token.EOF) && (p.peekTokenIs(token.PLUS) || p.peekTokenIs(token.MINUS)) {
 		p.nextToken()
 		operator := p.curToken
 		left := exp
-		exp = &ast.BinaryExpression{Operator: operator, Left: left, Right: p.parseTerm() } 
+		exp = &ast.BinaryExpression{Operator: operator, Left: left, Right: p.parseTerm()}
 	}
 	return exp
 }
 
-
 func (p *Parser) parseTerm() ast.Expression {
 	exp := p.parseFactor()
-	
-	for !p.peekTokenIs(token.EOF) &&  (p.peekTokenIs(token.SLASH) || p.peekTokenIs(token.ASTERISK) )   {
+
+	for !p.peekTokenIs(token.EOF) && (p.peekTokenIs(token.SLASH) || p.peekTokenIs(token.ASTERISK)) {
 		p.nextToken()
 		operator := p.curToken
 		left := exp
-		exp = &ast.BinaryExpression{Operator: operator, Left: left, Right: p.parseTerm() } 
+		exp = &ast.BinaryExpression{Operator: operator, Left: left, Right: p.parseTerm()}
 	}
 	return exp
 }
@@ -137,7 +121,7 @@ func (p *Parser) parseTerm() ast.Expression {
 func (p *Parser) parseFactor() ast.Expression {
 	switch p.peekToken.Type {
 	case token.INTCONST:
-		return  p.parseIntegerLiteral()
+		return p.parseIntegerLiteral()
 	case token.MINUS, token.NOT, token.BANG:
 		return p.parseUnaryExpression()
 	}
@@ -145,12 +129,12 @@ func (p *Parser) parseFactor() ast.Expression {
 }
 
 func (p *Parser) parseUnaryExpression() ast.Expression {
-	p.nextToken();
+	p.nextToken()
 	operator := p.curToken
-	exp := &ast.UnaryExpression{Operator: operator, 
-		Right: p.parseExpression() } 
+	exp := &ast.UnaryExpression{Operator: operator,
+		Right: p.parseExpression()}
 	fmt.Println(exp.Operator)
-	return exp;
+	return exp
 }
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
@@ -159,7 +143,6 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	lit := &ast.IntegerLiteral{Token: p.curToken}
 
 	val, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
-	
 
 	if err != nil {
 		msg := fmt.Sprintf("could not parse %q as integer", p.curToken.Literal)
@@ -170,11 +153,6 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	lit.Value = val
 	return lit
 }
-
-
-
-
-
 
 func (p *Parser) peekTokenIs(t token.TokenType) bool {
 	return p.peekToken.Type == t
@@ -199,24 +177,3 @@ func (p *Parser) peekError(t token.TokenType, line int) {
 		line, t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
 }
-
-//// auxiliars
-/*
-
-func (p *Parser) curTokenIs(t token.TokenType) bool {
-	return p.curToken.Type == t
-}
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-func (p *Parser) curTokenAsInt() int {
-	i1, err := strconv.Atoi(p.curToken.Literal)
-	check(err)
-	return i1
-}
-*/
-

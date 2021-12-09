@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/profsergiocosta/ccompiler/symboltable"
-
 	"github.com/profsergiocosta/ccompiler/ast"
 	"github.com/profsergiocosta/ccompiler/lexer"
 	"github.com/profsergiocosta/ccompiler/token"
@@ -24,10 +22,7 @@ type Parser struct {
 	l             *lexer.Lexer
 	curToken      token.Token
 	peekToken     token.Token
-	output        string
 	errors        []string
-	st            *symboltable.SymbolTable
-	className     string
 	fileName      string
 	whileLabelNum int
 	ifLabelNum    int
@@ -47,10 +42,6 @@ func New(pathName string) *Parser {
 
 	p := &Parser{l: l}
 	p.fileName = FilenameWithoutExtension(path.Base(pathName))
-
-	p.st = symboltable.NewSymbolTable()
-
-
 
 	p.nextToken()
 	p.whileLabelNum = 0

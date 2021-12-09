@@ -47,8 +47,28 @@ func evalExpression (expression ast.Expression ) string {
 
 		case *ast.UnaryExpression:
 			return evalUnaryExpression(node)
+		
+		case *ast.BinaryExpression:
+			return evalBinaryExpression(node)
+
 	}
 	return  ""
+}
+
+func evalBinaryExpression(exp *ast.BinaryExpression ) string {
+	s := evalExpression(exp.Left)
+	s = s + "push %eax  \n";
+	s = s + evalExpression(exp.Right)
+	s = s + "pop %ecx\n"
+	switch exp.Operator.Type {
+			case token.PLUS:
+				s = s + "addl %ecx, %eax\n"
+			case token.ASTERISK:
+				s = s + "imul %ecx, %eax\n"
+
+	}
+
+	return s
 }
 
 func evalUnaryExpression(exp *ast.UnaryExpression ) string {

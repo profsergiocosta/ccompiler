@@ -118,6 +118,32 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 }
 
 func (p *Parser) parseExpression() ast.Expression {
+	
+	exp := p.parseTerm()
+	
+	for !p.peekTokenIs(token.EOF) &&  (p.peekTokenIs(token.PLUS) || p.peekTokenIs(token.MINUS) )   {
+		p.nextToken()
+		operator := p.curToken
+		left := exp
+		exp = &ast.BinaryExpression{Operator: operator, Left: left, Right: p.parseTerm() } 
+	}
+	return exp
+}
+
+
+func (p *Parser) parseTerm() ast.Expression {
+	exp := p.parseFactor()
+	
+	for !p.peekTokenIs(token.EOF) &&  (p.peekTokenIs(token.SLASH) || p.peekTokenIs(token.ASTERISK) )   {
+		p.nextToken()
+		operator := p.curToken
+		left := exp
+		exp = &ast.BinaryExpression{Operator: operator, Left: left, Right: p.parseTerm() } 
+	}
+	return exp
+}
+
+func (p *Parser) parseFactor() ast.Expression {
 	switch p.peekToken.Type {
 	case token.INTCONST:
 		return  p.parseIntegerLiteral()

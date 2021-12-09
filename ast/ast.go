@@ -116,3 +116,25 @@ func (exp *UnaryExpression) TokenLiteral() string { return exp.Operator.Literal 
 func (exp *UnaryExpression) String() string {
 	return exp.Operator.Literal
 }
+
+type BinaryExpression struct {
+	Operator token.Token 
+	Left    Expression
+	Right    Expression
+}
+
+func (exp *BinaryExpression) expressionNode() {}
+func (exp *BinaryExpression) TokenLiteral() string { return exp.Operator.Literal }
+
+func (exp *BinaryExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(" + exp.Operator.Literal + " ")
+
+	out.WriteString(exp.Left.String() + " ")
+	out.WriteString(exp.Right.String() + " ")
+
+	out.WriteString(" )")
+
+	return out.String()
+}

@@ -76,8 +76,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 	p.expectPeek(token.RBRACE)
 
-	//fun.Statement = stmt
-
 	program := &ast.Program{Function: fun}
 
 	return program
@@ -89,14 +87,46 @@ func (p *Parser) parseStatement() ast.Statement {
 	switch p.peekToken.Type {
 	case token.RETURN:
 		return p.parseReturnStatement()
+	case token.INT:
+		return p.parseDeclareStatement()
 	default:
-		return nil
+		return p.parseAssignStatement()
 	}
+}
+
+func (p *Parser) parseAssignStatement() *ast.AssignStatement {
+
+	p.expectPeek(token.IDENT)
+	stmt := &ast.AssignStatement{
+		VarName: p.curToken,
+	}
+	p.expectPeek(token.EQ)
+	stmt.Init = p.parseExpression()
+	p.expectPeek(token.SEMICOLON)
+	return stmt
+}
+
+func (p *Parser) parseDeclareStatement() *ast.DeclareStatement {
+
+	p.expectPeek(token.INT) // por hora apenas variaveis inteiras
+	stmt := &ast.DeclareStatement{
+		Type: p.curToken,
+	}
+	p.expectPeek(token.IDENT)
+	stmt.VarName = p.curToken
+	if p.peekTokenIs(token.SEMICOLON) {
+		stmt.Init = nil
+	} else {
+		p.expectPeek(token.EQ)
+		stmt.Init = p.parseExpression()
+	}
+	p.expectPeek(token.SEMICOLON)
+
+	return stmt
 }
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 
-	fmt.Println("----")
 	p.expectPeek(token.RETURN)
 
 	stmt := &ast.ReturnStatement{

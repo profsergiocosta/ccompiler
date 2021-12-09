@@ -152,3 +152,60 @@ func (exp *BinaryExpression) String() string {
 
 	return out.String()
 }
+
+type DeclareStatement struct {
+	Type    token.Token
+	VarName token.Token
+	Init    Expression
+}
+
+func (rs *DeclareStatement) statementNode() {}
+
+func (rs *DeclareStatement) TokenLiteral() string {
+	return rs.VarName.Literal
+}
+
+func (rs *DeclareStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(Decl ")
+
+	out.WriteString(rs.TokenLiteral())
+
+	if rs.Init != nil {
+		out.WriteString("=")
+		out.WriteString(rs.Init.String())
+	}
+
+	out.WriteString(") ")
+
+	return out.String()
+}
+
+type AssignStatement struct {
+	VarName token.Token
+	Init    Expression
+}
+
+func (rs *AssignStatement) statementNode() {}
+
+func (rs *AssignStatement) TokenLiteral() string {
+	return rs.VarName.Literal
+}
+
+func (rs *AssignStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(Assign ")
+
+	out.WriteString(rs.TokenLiteral())
+
+	if rs.Init != nil {
+		out.WriteString("=")
+		out.WriteString(rs.Init.String())
+	}
+
+	out.WriteString(") ")
+
+	return out.String()
+}

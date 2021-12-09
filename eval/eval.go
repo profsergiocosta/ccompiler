@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/profsergiocosta/ccompiler/ast"
+	"github.com/profsergiocosta/ccompiler/token"
 )
 
 func Eval(node ast.Node) string {
@@ -20,8 +21,10 @@ func Eval(node ast.Node) string {
 		case *ast.ReturnStatement:
 			return evalReturnStatement(node)
 		
-		case *ast.IntegerLiteral:
-			return evalIntegerLiteral(node)
+		case ast.Expression:
+			return evalExpression(node)
+
+
 			
 	}
 
@@ -34,6 +37,38 @@ func evalProgram(program *ast.Program) string {
 
 
 
+}
+
+func evalExpression (expression ast.Expression ) string {
+
+	switch node := expression.(type) {
+		case *ast.IntegerLiteral:
+			return evalIntegerLiteral(node)
+
+		case *ast.UnaryExpression:
+			return evalUnaryExpression(node)
+	}
+	return  ""
+}
+
+func evalUnaryExpression(exp *ast.UnaryExpression ) string {
+	s := evalExpression(exp.Right)
+	fmt.Println(exp.Operator)
+	switch exp.Operator.Type {
+		case token.MINUS:
+			s = s + "neg\t%eax\n"
+		case token.NOT:
+			s = s + "not\t%eax\n"
+		case token.BANG:
+			s = s + `
+cmpl   $0, %eax    ;set ZF on if exp == 0, set it off otherwise
+movl   $0, %eax    ;zero out EAX (doesn't change FLAGS)
+sete   %al` + "\n"
+
+	}
+
+
+	return s
 }
 
 func evalFunction(function *ast.Function) string {
@@ -55,7 +90,7 @@ func evalReturnStatement (ret *ast.ReturnStatement) string {
 }
 
 func evalIntegerLiteral (val *ast.IntegerLiteral) string {
-	s := fmt.Sprintf("movl \t$%v, %%eax\n", val.Value )
+	s := fmt.Sprintf("movl\t$%v,%%eax\n", val.Value )
 	return s
 
 }

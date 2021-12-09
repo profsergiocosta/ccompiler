@@ -28,6 +28,7 @@ const (
 	AND      = "&"
 	OR       = "|"
 	NOT      = "~"
+	BANG      = "!"
 	DOT      = "."
 	LT       = "<"
 	GT       = ">"
@@ -111,6 +112,7 @@ var symbols = map[byte]TokenType{
 	'}': RBRACE,
 	'[': LBRACKET,
 	']': RBRACKET,
+	'!' : BANG,
 }
 
 func LookupIdent(ident string) TokenType {
@@ -136,12 +138,12 @@ func IsDigit(ch byte) bool {
 }
 
 func IsSymbol(c byte) bool {
-	symbols := "{}()[].,;+-*/&|<>=~"
+	symbols := "{}()[].,;+-*/&|<>=~!"
 	return strings.IndexByte(symbols, c) != -1
 }
 
 func IsOperator(c byte) bool {
-	operators := "+-*/&|<>=~"
+	operators := "+-*/&|<>=~!"
 	return strings.IndexByte(operators, c) != -1
 }
 

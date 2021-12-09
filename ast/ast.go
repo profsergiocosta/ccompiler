@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+
 	"github.com/profsergiocosta/ccompiler/token"
 )
 
@@ -9,9 +10,8 @@ import (
 program = Program(function_declaration)
 function_declaration = Function(string, statement) //string is the function name
 statement = Return(exp)
-exp = Constant(int) 
+exp = Constant(int)
 */
-
 
 // Node represents an AST node.
 type Node interface {
@@ -104,4 +104,15 @@ func (il *IntegerLiteral) TokenLiteral() string {
 
 func (il *IntegerLiteral) String() string {
 	return il.Token.Literal
+}
+
+type UnaryExpression struct {
+	Operator token.Token 
+	Right    Expression
+}
+
+func (exp *UnaryExpression) expressionNode() {}
+func (exp *UnaryExpression) TokenLiteral() string { return exp.Operator.Literal }
+func (exp *UnaryExpression) String() string {
+	return exp.Operator.Literal
 }

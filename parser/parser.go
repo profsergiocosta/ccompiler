@@ -10,9 +10,9 @@ import (
 
 	"github.com/profsergiocosta/ccompiler/symboltable"
 
+	"github.com/profsergiocosta/ccompiler/ast"
 	"github.com/profsergiocosta/ccompiler/lexer"
 	"github.com/profsergiocosta/ccompiler/token"
-	"github.com/profsergiocosta/ccompiler/ast"
 )
 
 const (
@@ -108,9 +108,7 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 		Token: p.curToken,
 	}
 
-	p.nextToken()
-
-	stmt.ReturnValue = p.parseIntegerLiteral()
+	stmt.ReturnValue = p.parseExpression()
 
 	for p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()
@@ -119,8 +117,28 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	return stmt
 }
 
+func (p *Parser) parseExpression() ast.Expression {
+	switch p.peekToken.Type {
+	case token.INTCONST:
+		return  p.parseIntegerLiteral()
+	case token.MINUS, token.NOT, token.BANG:
+		return p.parseUnaryExpression()
+	}
+	return nil
+}
 
-func (p *Parser) parseIntegerLiteral() *ast.IntegerLiteral {
+func (p *Parser) parseUnaryExpression() ast.Expression {
+	p.nextToken();
+	operator := p.curToken
+	exp := &ast.UnaryExpression{Operator: operator, 
+		Right: p.parseExpression() } 
+	fmt.Println(exp.Operator)
+	return exp;
+}
+
+func (p *Parser) parseIntegerLiteral() ast.Expression {
+	p.nextToken()
+
 	lit := &ast.IntegerLiteral{Token: p.curToken}
 
 	val, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
@@ -138,9 +156,8 @@ func (p *Parser) parseIntegerLiteral() *ast.IntegerLiteral {
 
 
 
-func (p *Parser) curTokenIs(t token.TokenType) bool {
-	return p.curToken.Type == t
-}
+
+
 
 func (p *Parser) peekTokenIs(t token.TokenType) bool {
 	return p.peekToken.Type == t
@@ -167,6 +184,11 @@ func (p *Parser) peekError(t token.TokenType, line int) {
 }
 
 //// auxiliars
+/*
+
+func (p *Parser) curTokenIs(t token.TokenType) bool {
+	return p.curToken.Type == t
+}
 
 func check(e error) {
 	if e != nil {
@@ -179,5 +201,5 @@ func (p *Parser) curTokenAsInt() int {
 	check(err)
 	return i1
 }
-
+*/
 

@@ -1,4 +1,0 @@
-int ola()
-{
-    return 56;
-}

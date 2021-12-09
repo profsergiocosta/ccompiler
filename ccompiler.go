@@ -5,10 +5,12 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 
-	"github.com/profsergiocosta/ccompiler/parser"
 	"github.com/profsergiocosta/ccompiler/eval"
+	"github.com/profsergiocosta/ccompiler/parser"
 )
 
 // https://golang.org/doc/code.html
@@ -21,6 +23,10 @@ func IsDirectory(path string) bool {
 		os.Exit(1)
 	}
 	return fileInfo.IsDir()
+}
+
+func FilenameWithoutExtension(fn string) string {
+	return strings.TrimSuffix(fn, path.Ext(fn))
 }
 
 func main() {
@@ -47,15 +53,23 @@ func main() {
 			}
 
 		} else {
-			abs, _ := filepath.Abs(path)
+			//abs, _ := filepath.Abs(path)
 
-			fmt.Printf("Compiling: %s \n", abs)
+			//dirname, _ := filepath.Split(abs)
+			
+			//fmt.Printf("Compiling: %s  \n", abs)
 			p := parser.New(path)
 			program := p.ParseProgram()
 			//fmt.Printf(program.Function.TokenLiteral())
 			//fmt.Printf(program.Function.Statement.String())
 			s := eval.Eval(program)
-			fmt.Printf(s)
+			//out := *os.File
+			outFileName := FilenameWithoutExtension(path)
+			
+			out, _ := os.Create(outFileName+".s")
+			//fmt.Printf(s)
+			out.WriteString(s)
+			//out.Close();
 			//p.Compile()
 			//p.CompileExpression()
 			//p.CompileIf()

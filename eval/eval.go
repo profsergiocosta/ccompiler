@@ -1,7 +1,6 @@
 package eval
 
 import (
-
 	"fmt"
 
 	"github.com/profsergiocosta/ccompiler/ast"
@@ -39,9 +38,9 @@ func evalProgram(program *ast.Program) string {
 
 func evalFunction(function *ast.Function) string {
 
-	s := fmt.Sprintf(".globl _%s\n",function.Token.Literal)
+	s := fmt.Sprintf(".globl %s\n",function.Token.Literal)
 
-	s = s + fmt.Sprintf("_%s:\n",function.Token.Literal)
+	s = s + fmt.Sprintf("%s:\n",function.Token.Literal)
 
 	return s + Eval(function.Statement)
 
@@ -50,13 +49,13 @@ func evalFunction(function *ast.Function) string {
 
 func evalReturnStatement (ret *ast.ReturnStatement) string {
 	s := Eval(ret.ReturnValue)
-	s = s + fmt.Sprintf("ret\n")
+	s = s + "ret\n"
 	return s
 
 }
 
 func evalIntegerLiteral (val *ast.IntegerLiteral) string {
-	s := fmt.Sprintf("movl \t$%v, %%%%eax\n", val.Value )
+	s := fmt.Sprintf("movl \t$%v, %%eax\n", val.Value )
 	return s
 
 }

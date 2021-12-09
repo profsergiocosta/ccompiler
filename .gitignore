@@ -6,3 +6,5 @@ testing/stage_5/valid/*.s
 testing/stage_6/valid/*.s
 testing/stage_7/valid/*.s
 testing/stage_8/valid/*.s
+.github
+.vscode

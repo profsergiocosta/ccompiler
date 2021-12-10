@@ -175,8 +175,16 @@ func (p *Parser) parseFactor() ast.Expression {
 		return p.parseIntegerLiteral()
 	case token.MINUS, token.NOT, token.BANG:
 		return p.parseUnaryExpression()
+	case token.IDENT:
+		return p.parseVariableExpression()
 	}
 	return nil
+}
+
+func (p *Parser) parseVariableExpression() ast.Expression {
+	p.expectPeek(token.IDENT)
+	exp := &ast.VarExpression{Name: p.curToken}
+	return exp
 }
 
 func (p *Parser) parseUnaryExpression() ast.Expression {

@@ -35,7 +35,6 @@ func main() {
 		p := parser.New(path)
 		program := p.ParseProgram()
 
-		fmt.Println(program)
 		s := gen.Generate(program)
 
 		outFileName := FilenameWithoutExtension(path)
@@ -43,6 +42,10 @@ func main() {
 		out, _ := os.Create(outFileName + ".s")
 
 		out.WriteString(s)
+
+		// debug
+		fmt.Println(program)
+		fmt.Println(s)
 
 	}
 

@@ -4,8 +4,11 @@ import (
 	"fmt"
 
 	"github.com/profsergiocosta/ccompiler/ast"
+	"github.com/profsergiocosta/ccompiler/symboltable"
 	"github.com/profsergiocosta/ccompiler/token"
 )
+
+var st = symboltable.NewSymbolTable() // global por agora
 
 func Generate(node ast.Node) string {
 
@@ -24,9 +27,36 @@ func Generate(node ast.Node) string {
 	case ast.Expression:
 		return genExpression(node)
 
+	case *ast.DeclareStatement:
+		return genDeclareStatement(node)
+
+	case *ast.AssignStatement:
+		return genAssignStatement(node)
+
 	}
 
 	return ""
+}
+
+func genAssignStatement(dec *ast.AssignStatement) string {
+	symbol, _ := st.Resolve(dec.VarName.Literal)
+	index := symbol.Index
+	s := genExpression(dec.Init)
+	s = s + fmt.Sprintf("movl %%eax, %d(%%ebp)\n", index)
+	return s
+
+}
+
+func genDeclareStatement(dec *ast.DeclareStatement) string {
+	st.Define(dec.VarName.Literal)
+	s := ""
+	if dec.Init == nil {
+		s = s + "movl  $0,%eax\n"
+	} else {
+		s = s + genExpression(dec.Init)
+	}
+	s = s + "pushl %eax\n"
+	return s
 }
 
 func genProgram(program *ast.Program) string {
@@ -47,8 +77,18 @@ func genExpression(expression ast.Expression) string {
 	case *ast.BinaryExpression:
 		return genBinaryExpression(node)
 
+	case *ast.VarExpression:
+		return genVarExpression(node)
+
 	}
 	return ""
+}
+
+func genVarExpression(exp *ast.VarExpression) string {
+	symbol, _ := st.Resolve(exp.Name.Literal)
+	index := symbol.Index
+	s := fmt.Sprintf("movl %d(%%ebp), %%eax\n", index)
+	return s
 }
 
 func genBinaryExpression(exp *ast.BinaryExpression) string {
@@ -86,27 +126,38 @@ sete   %al` + "\n"
 	return s
 }
 
+func genFunctionEpilogue() string {
+	s :=
+		`;---------epilogue
+movl %ebp, %esp
+pop %ebp
+ret
+;----------------------
+`
+	return s
+}
+
 func genFunction(function *ast.Function) string {
 
 	s := fmt.Sprintf(".globl %s\n", function.Token.Literal)
 
 	s = s + fmt.Sprintf("%s:\n", function.Token.Literal)
+	s = s + ";----------prologue\n"
+	s = s + "push %ebp\n"
+	s = s + "movl %esp, %ebp\n"
+	s = s + ";------------------\n"
 
 	for _, st := range function.Statements {
-		s = s + genStatement(&st)
+		s = s + Generate(st)
 	}
 
 	return s
 
 }
 
-func genStatement(statement *ast.Statement) string {
-	return ""
-}
-
 func genReturnStatement(ret *ast.ReturnStatement) string {
 	s := Generate(ret.ReturnValue)
-	s = s + "ret\n"
+	s = s + genFunctionEpilogue()
 	return s
 }
 

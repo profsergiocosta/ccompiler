@@ -131,24 +131,17 @@ func (exp *UnaryExpression) String() string {
 	return exp.Operator.Literal
 }
 
-type BinaryExpression struct {
-	Operator token.Token
-	Left     Expression
-	Right    Expression
+type VarExpression struct {
+	Name token.Token
 }
 
-func (exp *BinaryExpression) expressionNode()      {}
-func (exp *BinaryExpression) TokenLiteral() string { return exp.Operator.Literal }
+func (exp *VarExpression) expressionNode()      {}
+func (exp *VarExpression) TokenLiteral() string { return exp.Name.Literal }
 
-func (exp *BinaryExpression) String() string {
+func (exp *VarExpression) String() string {
 	var out bytes.Buffer
 
-	out.WriteString("(" + exp.Operator.Literal + " ")
-
-	out.WriteString(exp.Left.String() + " ")
-	out.WriteString(exp.Right.String() + " ")
-
-	out.WriteString(" )")
+	out.WriteString(exp.TokenLiteral())
 
 	return out.String()
 }
@@ -178,6 +171,28 @@ func (rs *DeclareStatement) String() string {
 	}
 
 	out.WriteString(") ")
+
+	return out.String()
+}
+
+type BinaryExpression struct {
+	Operator token.Token
+	Left     Expression
+	Right    Expression
+}
+
+func (exp *BinaryExpression) expressionNode()      {}
+func (exp *BinaryExpression) TokenLiteral() string { return exp.Operator.Literal }
+
+func (exp *BinaryExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(" + exp.Operator.Literal + " ")
+
+	out.WriteString(exp.Left.String() + " ")
+	out.WriteString(exp.Right.String() + " ")
+
+	out.WriteString(" )")
 
 	return out.String()
 }

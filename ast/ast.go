@@ -3,7 +3,7 @@ package ast
 import (
 	"bytes"
 
-	"github.com/profsergiocosta/ccompiler/token"
+	"ccompiler/token"
 )
 
 /*

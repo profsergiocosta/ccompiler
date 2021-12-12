@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/profsergiocosta/ccompiler/token"
+	"ccompiler/token"
 )
 
 type Lexer struct {

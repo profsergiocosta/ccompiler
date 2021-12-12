@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/profsergiocosta/ccompiler/token"
+	"ccompiler/token"
 )
 
 func TestNextToken(t *testing.T) {

@@ -3,8 +3,8 @@ package gen
 import (
 	"fmt"
 
-	"github.com/profsergiocosta/ccompiler/ast"
-	"github.com/profsergiocosta/ccompiler/token"
+	"ccompiler/ast"
+	"ccompiler/token"
 )
 
 func Generate(node ast.Node) string {

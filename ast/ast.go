@@ -198,7 +198,7 @@ func (exp *BinaryExpression) String() string {
 }
 
 type AssignStatement struct {
-	VarName token.TokenGenerate
+	VarName token.Token
 	Init    Expression
 }
 

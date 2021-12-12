@@ -3,9 +3,9 @@ package gen
 import (
 	"fmt"
 
-	"github.com/profsergiocosta/ccompiler/ast"
-	"github.com/profsergiocosta/ccompiler/symboltable"
-	"github.com/profsergiocosta/ccompiler/token"
+	"ccompiler/ast"
+	"ccompiler/symboltable"
+	"ccompiler/token"
 )
 
 var st = symboltable.NewSymbolTable() // global por agora

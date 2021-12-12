@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/profsergiocosta/ccompiler/gen"
-	"github.com/profsergiocosta/ccompiler/parser"
+	"ccompiler/gen"
+	"ccompiler/parser"
 )
 
 func IsDirectory(path string) bool {

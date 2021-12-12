@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/profsergiocosta/ccompiler/ast"
-	"github.com/profsergiocosta/ccompiler/lexer"
-	"github.com/profsergiocosta/ccompiler/token"
+	"ccompiler/ast"
+	"ccompiler/lexer"
+	"ccompiler/token"
 )
 
 const (

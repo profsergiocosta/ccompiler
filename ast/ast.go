@@ -3,7 +3,7 @@ package ast
 import (
 	"bytes"
 
-	"github.com/profsergiocosta/ccompiler/token"
+	"ccompiler/token"
 )
 
 /*
@@ -198,7 +198,7 @@ func (exp *BinaryExpression) String() string {
 }
 
 type AssignStatement struct {
-	VarName token.Token
+	VarName token.TokenGenerate
 	Init    Expression
 }
 

@@ -6,12 +6,7 @@ import (
 	"ccompiler/token"
 )
 
-/*
-program = Program(function_declaration)
-function_declaration = Function(string, statement) //string is the function name
-statement = Return(exp)
-exp = Constant(int)
-*/
+
 
 // Node represents an AST node.
 type Node interface {
@@ -30,7 +25,7 @@ type Expression interface {
 }
 
 type Program struct {
-	Function *Function
+	Functions []Function
 }
 
 // TokenLiteral returns the first token literal of a program.
@@ -43,8 +38,9 @@ func (p *Program) String() string {
 
 	out.WriteString("(Program ")
 
-	out.WriteString(p.Function.String())
-
+	for _, f := range p.Functions {
+		out.WriteString(f.String())
+	}
 	out.WriteString(" )")
 
 	return out.String()

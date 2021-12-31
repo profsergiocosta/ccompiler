@@ -36,6 +36,8 @@ func New(pathName string) *Parser {
 
 	input, err := ioutil.ReadFile(pathName)
 	if err != nil {
+		fmt.Println("nao rolou "+pathName)
+		fmt.Println(err)
 		panic("erro")
 	}
 	l := lexer.New(string(input))
@@ -55,10 +57,25 @@ func (p *Parser) nextToken() {
 
 func (p *Parser) ParseProgram() *ast.Program {
 
+	
+	program := &ast.Program{}
+	program.Functions = []ast.Function{}
+
+	for p.peekTokenIs(token.INT) {
+		fun := p.ParseFunction()
+		program.Functions = append(program.Functions,fun)
+	}
+
+	return program
+
+}
+
+func (p *Parser) ParseFunction() ast.Function {
+
 	p.expectPeek(token.INT)
 	p.expectPeek(token.IDENT)
 
-	fun := &ast.Function{Token: p.curToken}
+	fun := ast.Function{Token: p.curToken}
 
 	p.expectPeek(token.LPAREN)
 	p.expectPeek(token.RPAREN)
@@ -69,16 +86,13 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 	for !p.peekTokenIs(token.RBRACE) {
 		stmt := p.parseStatement()
-		if stmt != nil {
-			fun.Statements = append(fun.Statements, stmt)
-		}
+		fun.Statements = append(fun.Statements, stmt)
 	}
 
 	p.expectPeek(token.RBRACE)
 
-	program := &ast.Program{Function: fun}
+	return fun
 
-	return program
 
 }
 

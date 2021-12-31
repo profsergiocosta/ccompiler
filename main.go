@@ -29,8 +29,12 @@ func main() {
 
 	arg := os.Args[1:]
 
+
+	fmt.Println(arg)
+
 	if len(arg) == 1 {
 		path := arg[0]
+		fmt.Println(path)
 
 		p := parser.New(path)
 		program := p.ParseProgram()
@@ -39,7 +43,7 @@ func main() {
 
 		outFileName := FilenameWithoutExtension(path)
 
-		out, _ := os.Create(outFileName + ".s")
+		out, _ := os.Create(outFileName + ".asm")
 
 		out.WriteString(s)
 

@@ -29,7 +29,6 @@ func main() {
 
 	arg := os.Args[1:]
 
-
 	fmt.Println(arg)
 
 	if len(arg) == 1 {
@@ -43,7 +42,7 @@ func main() {
 
 		outFileName := FilenameWithoutExtension(path)
 
-		out, _ := os.Create(outFileName + ".asm")
+		out, _ := os.Create(outFileName + ".s")
 
 		out.WriteString(s)
 

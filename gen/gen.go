@@ -132,11 +132,11 @@ sete   %al` + "\n"
 
 func genFunctionEpilogue() string {
 	s :=
-		`;inicio epilogue
+		`#inicio epilogue
 movl %ebp, %esp
 pop %ebp
 ret
-;fim epilogue
+#fim epilogue
 `
 	return s
 }
@@ -146,10 +146,10 @@ func genFunction(function *ast.Function) string {
 	s := fmt.Sprintf(".globl %s\n", function.Token.Literal)
 
 	s = s + fmt.Sprintf("%s:\n", function.Token.Literal)
-	s = s + ";inicio prologue\n"
+	s = s + "#inicio prologue\n"
 	s = s + "push %ebp\n"
 	s = s + "movl %esp, %ebp\n"
-	s = s + ";fim prologue\n"
+	s = s + "#fim prologue\n"
 
 	for _, st := range function.Statements {
 		s = s + Generate(st)

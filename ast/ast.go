@@ -48,7 +48,8 @@ func (p *Program) String() string {
 
 type Function struct {
 	Token      token.Token
-	Statements []Statement
+	Parameters  []string
+	Statements  []Statement
 }
 
 func (fl *Function) expressionNode() {}
@@ -195,6 +196,7 @@ func (exp *BinaryExpression) String() string {
 
 type FunCall struct {
 	Name string
+	Expressions  []Expression
 }
 
 

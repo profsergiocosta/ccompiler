@@ -2,6 +2,7 @@ package gen
 
 import (
 	"fmt"
+	
 
 	"ccompiler/ast"
 	"ccompiler/symboltable"
@@ -91,8 +92,20 @@ func genExpression(expression ast.Expression) string {
 	return ""
 }
 
-func genFunCal (exp* ast.FunCall) string {
-	s := fmt.Sprintf("call %s\n", exp.Name)
+
+
+func genFunCal (funCal* ast.FunCall) string {
+	s := ""
+
+	for _, exp := range funCal.Expressions {
+		s = s + genExpression(exp)
+		s = s + "pushl %eax\n"
+	}
+
+	s = fmt.Sprintf("call %s\n", funCal.Name)
+
+	var v int =   (4 * len (funCal.Expressions))
+	s = s+ fmt.Sprintf("addl $0x%x, %%esp\n", v)
 	return s
 }
 
@@ -158,6 +171,11 @@ func genFunction(function *ast.Function) string {
 	s = s + "push %ebp\n"
 	s = s + "movl %esp, %ebp\n"
 	s = s + "#fim prologue\n"
+
+
+	for _, par := range function.Parameters {
+		st.DefineArg(par)
+	}
 
 	for _, st := range function.Statements {
 		s = s + Generate(st)

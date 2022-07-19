@@ -78,7 +78,30 @@ func (p *Parser) ParseFunction() ast.Function {
 	fun := ast.Function{Token: p.curToken}
 
 	p.expectPeek(token.LPAREN)
-	p.expectPeek(token.RPAREN)
+	fun.Parameters = []string{}
+
+	// parameters
+	if (p.peekTokenIs(token.RPAREN)) {
+		p.expectPeek(token.RPAREN)
+	} else {
+		// pelo meno um parametro
+		fmt.Println(p.peekToken)
+		p.expectPeek(token.INT);
+		p.expectPeek(token.IDENT);
+		fun.Parameters = append (fun.Parameters, p.curToken.Literal)
+
+		for ( p.peekTokenIs(token.COMMA)) {
+			p.expectPeek(token.COMMA);
+			p.expectPeek(token.INT);
+			p.expectPeek(token.IDENT);
+			fun.Parameters = append (fun.Parameters, p.curToken.Literal)
+	
+		}
+		p.expectPeek(token.RPAREN)
+
+	}
+
+	
 
 	p.expectPeek(token.LBRACE)
 
@@ -99,10 +122,30 @@ func (p *Parser) ParseFunction() ast.Function {
 func (p* Parser) parseFunctionCall () ast.Expression {
 	//p.expectPeek(token.IDENT);
 	ident := p.curToken.Literal;
-	p.expectPeek(token.LPAREN);
-	p.expectPeek(token.RPAREN);
 
-	return &ast.FunCall{Name:ident}
+	fun := ast.FunCall{Name:ident}
+	p.expectPeek(token.LPAREN);
+
+	fun.Expressions = []ast.Expression{}
+
+	if (p.peekTokenIs(token.RPAREN)) {
+		p.expectPeek(token.RPAREN)
+	} else {
+		// pelo meno um parametro
+		fmt.Println(p.peekToken)
+		exp := p.parseExpression()
+		fun.Expressions = append (fun.Expressions, exp)
+		for ( p.peekTokenIs(token.COMMA)) {
+			p.expectPeek(token.COMMA);
+			exp := p.parseExpression()
+			fun.Expressions = append (fun.Expressions, exp)
+		}
+		p.expectPeek(token.RPAREN)
+
+	}
+	
+
+	return &fun
 }
 
 func (p *Parser) parseStatement() ast.Statement {

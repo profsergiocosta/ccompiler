@@ -1,8 +1,10 @@
 int add(int a, int b) {
-    return a + b;
+    int w = 5;
+    return a + b + w;
 }
 
 int main() {
-    int sum = add(1 + 2, 4);
-    return sum + sum;
+    int x = 15;
+    int y = 30;
+    return add(x, y);
 }

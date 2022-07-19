@@ -102,7 +102,7 @@ func genFunCal (funCal* ast.FunCall) string {
 		s = s + "pushl %eax\n"
 	}
 
-	s = fmt.Sprintf("call %s\n", funCal.Name)
+	s = s + fmt.Sprintf("call %s\n", funCal.Name)
 
 	var v int =   (4 * len (funCal.Expressions))
 	s = s+ fmt.Sprintf("addl $0x%x, %%esp\n", v)
@@ -192,7 +192,10 @@ func genReturnStatement(ret *ast.ReturnStatement) string {
 }
 
 func genIntegerLiteral(val *ast.IntegerLiteral) string {
+	fmt.Println("Aqui..")
+	fmt.Println(val.Value)
 	s := fmt.Sprintf("movl\t$%v,%%eax\n", val.Value)
+	fmt.Println(s)
 	return s
 
 }

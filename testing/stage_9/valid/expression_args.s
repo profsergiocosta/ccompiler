@@ -32,6 +32,12 @@ movl	$30,%eax
 pushl %eax
 call add
 addl $0x8, %esp
+push %eax  
+movl	$2,%eax
+pop %ecx
+imul %ecx, %eax
+pushl %eax
+movl -16(%ebp), %eax
 #inicio epilogue
 movl %ebp, %esp
 pop %ebp

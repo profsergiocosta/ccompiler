@@ -6,5 +6,6 @@ int add(int a, int b) {
 int main() {
     int x = 15;
     int y = 30;
-    return add(x, y);
+    int k = add(x, y) * 2;
+    return k;
 }

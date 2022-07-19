@@ -193,6 +193,23 @@ func (exp *BinaryExpression) String() string {
 	return out.String()
 }
 
+type FunCall struct {
+	Name string
+}
+
+
+func (exp *FunCall) expressionNode()      {}
+func (exp *FunCall) TokenLiteral() string { return exp.Name }
+
+func (exp *FunCall) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(" + exp.Name + ")")
+
+
+	return out.String()
+}
+
 type AssignStatement struct {
 	VarName token.Token
 	Init    Expression

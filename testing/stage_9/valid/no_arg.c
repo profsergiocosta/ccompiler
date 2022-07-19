@@ -1,5 +1,5 @@
 int three(){
-    return 3;
+    return 35;
 }
 
 int main() {

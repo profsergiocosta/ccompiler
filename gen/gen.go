@@ -84,8 +84,16 @@ func genExpression(expression ast.Expression) string {
 	case *ast.VarExpression:
 		return genVarExpression(node)
 
+	case *ast.FunCall:
+		return genFunCal(node)
+
 	}
 	return ""
+}
+
+func genFunCal (exp* ast.FunCall) string {
+	s := fmt.Sprintf("call %s\n", exp.Name)
+	return s
 }
 
 func genVarExpression(exp *ast.VarExpression) string {

@@ -22,5 +22,5 @@ sudo apt-get install gcc-multilib
 ```
 
 ```python
-gcc -m32 return_2.s -o return_2
+gcc -m32  testing/stage_1/valid/return_2.s -o return_2
 ```

@@ -96,6 +96,15 @@ func (p *Parser) ParseFunction() ast.Function {
 
 }
 
+func (p* Parser) parseFunctionCall () ast.Expression {
+	//p.expectPeek(token.IDENT);
+	ident := p.curToken.Literal;
+	p.expectPeek(token.LPAREN);
+	p.expectPeek(token.RPAREN);
+
+	return &ast.FunCall{Name:ident}
+}
+
 func (p *Parser) parseStatement() ast.Statement {
 
 	switch p.peekToken.Type {
@@ -190,13 +199,18 @@ func (p *Parser) parseFactor() ast.Expression {
 	case token.MINUS, token.NOT, token.BANG:
 		return p.parseUnaryExpression()
 	case token.IDENT:
-		return p.parseVariableExpression()
+		p.expectPeek(token.IDENT);
+		if (p.peekTokenIs(token.LPAREN)) {
+			return p.parseFunctionCall()
+		} else {
+			return p.parseVariableExpression()
+		}
+		
 	}
 	return nil
 }
 
 func (p *Parser) parseVariableExpression() ast.Expression {
-	p.expectPeek(token.IDENT)
 	exp := &ast.VarExpression{Name: p.curToken}
 	return exp
 }

@@ -1,7 +1,6 @@
-//int putchar(int c);
 
 int main() {
-    int x = 72 ;
+    int x = 72;
     x = putchar(x);
     /*
     x = putchar(101);
@@ -18,4 +17,5 @@ int main() {
     x = putchar(33);
    x =  putchar(10);
    */
+  return 0;
 }

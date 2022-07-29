@@ -24,6 +24,8 @@ type Expression interface {
 	expressionNode()
 }
 
+
+
 type Program struct {
 	Functions []Function
 }
@@ -201,6 +203,7 @@ type FunCall struct {
 
 
 func (exp *FunCall) expressionNode()      {}
+func (exp *FunCall) statementNode()      {}
 func (exp *FunCall) TokenLiteral() string { return exp.Name }
 
 func (exp *FunCall) String() string {

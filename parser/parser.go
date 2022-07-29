@@ -119,7 +119,7 @@ func (p *Parser) ParseFunction() ast.Function {
 
 }
 
-func (p* Parser) parseFunctionCall () ast.Expression {
+func (p* Parser) parseFunctionCall () *ast.FunCall {
 	//p.expectPeek(token.IDENT);
 	ident := p.curToken.Literal;
 
@@ -155,14 +155,22 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseReturnStatement()
 	case token.INT:
 		return p.parseDeclareStatement()
-	default:
-		return p.parseAssignStatement()
+	case token.IDENT:
+		p.expectPeek(token.IDENT)
+		if p.peekTokenIs(token.EQ) {
+			return p.parseAssignStatement()
+		} 	
+		if p.peekTokenIs(token.LPAREN) {
+			fun := p.parseFunctionCall()
+			p.expectPeek(token.SEMICOLON)
+			return fun
+		}
 	}
+	panic ("erro " + p.curToken.Literal)
 }
 
 func (p *Parser) parseAssignStatement() *ast.AssignStatement {
 
-	p.expectPeek(token.IDENT)
 	stmt := &ast.AssignStatement{
 		VarName: p.curToken,
 	}
